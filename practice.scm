@@ -36,6 +36,7 @@
   (filt pred lst ()))
 
 ;; CONTAINS
+
 (define (contains val lst)
   (cond ((null? lst) #f)
         ((equal? val (car lst)) #t)
@@ -43,11 +44,11 @@
 
 ;; EQUAL (PARTIAL)
 (define (equalTo num)
-  (lambda (x) (= num x)))
+  (lambda (x) (equal? num x)))
 
 ;; NOT EQUAL (PARTIAL)
 (define (notEqualTo num)
-  (lambda (x) (not (= num x))))
+  (lambda (x) (not (equal? num x))))
 
 ;; REMOVE
 (define (rem val lst acc)
@@ -63,3 +64,13 @@
 ;; ALTERNATIVE REMOVE - USING FILTER
 (define (removeAlt val lst)
   (filter (notEqualTo val) lst))
+
+;; REPLACE
+(define (rep oldval newval lst acc)
+  (cond ((null? lst) acc)
+	((= oldval (car lst)) (rep oldval newval (cdr lst) (cons newval acc)))
+	(else (rep oldval newval (cdr lst) (cons (car lst) acc)))))
+
+;; entry point
+(define (replace oldval newval lst)
+  (reverse (rep oldval newval lst '())))
